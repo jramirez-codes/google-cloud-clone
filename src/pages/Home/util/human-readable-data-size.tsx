@@ -1,6 +1,5 @@
 export function humanReadableSize(bytes: number) {
   try {
-
     if (bytes < 0) throw new Error("Bytes value cannot be negative");
 
     const units = ["B", "KB", "MB", "GB", "TB", "PB", "EB", "ZB", "YB"];

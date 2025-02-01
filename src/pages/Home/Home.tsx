@@ -214,7 +214,7 @@ export default function Home() {
                         </Button>
                       </DropdownMenuTrigger>
                       <DropdownMenuContent>
-                        <DropdownMenuItem onClick={() => { handleFileDownload(file) }}>Download</DropdownMenuItem>
+                        {file.type !== 'folder' && <DropdownMenuItem onClick={() => { handleFileDownload(file) }}>Download</DropdownMenuItem>}
                         <DropdownMenuItem onClick={() => { handleFileDelete(file) }}>Delete</DropdownMenuItem>
                         {/* <DropdownMenuItem>Move</DropdownMenuItem> */}
                       </DropdownMenuContent>
