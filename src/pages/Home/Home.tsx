@@ -19,6 +19,14 @@ import { uploadFile } from "./util/upload-file"
 import { toast } from "sonner"
 import { humanReadableSize } from "./util/human-readable-data-size"
 import { deleteFile } from "./util/delete-file"
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogHeader,
+  DialogTitle,
+} from "@/components/ui/dialog"
+import { Input } from "@/components/ui/input"
 
 // const breadcrumbItems = [
 //   { label: "My Drive", href: "" },
@@ -43,6 +51,7 @@ export default function Home() {
     href: ''
   }])
   const fileInputRef = React.useRef<any>(null)
+  const [folderCreationDialog, setFolderCreationDialog] = React.useState(false)
 
   React.useEffect(() => {
     const asyncFunc = async () => {
@@ -73,14 +82,19 @@ export default function Home() {
 
   async function handleFileUpload(event: any) {
     setAreResultsLoading(_ => true)
-    if (await uploadFile(event.target.files[0], event.target.files[0].name)) {
+    if (await uploadFile(event.target.files[0], currDir + event.target.files[0].name)) {
       toast.success(`Upload Success`, { description: `${event.target.files[0].name} as uploaded!` })
-      setFiles(e=>[...e.filter(a=>a.key!== currDir + event.target.files[0].name),({ 
-        name: event.target.files[0].name, 
+      const dateString = (new Date).toLocaleDateString('en-GB', {
+        year: 'numeric',
+        month: '2-digit',
+        day: '2-digit'
+      });
+      setFiles(e => [...e.filter(a => a.key !== currDir + event.target.files[0].name), ({
+        name: event.target.files[0].name,
         key: currDir + event.target.files[0].name,
-        type: "file", 
-        size: NaN, 
-        modified: "2023-06-01" 
+        type: "file",
+        size: NaN,
+        modified: dateString
       } as S3File)])
     }
     else {
@@ -95,11 +109,36 @@ export default function Home() {
     }
   }
 
-  function handleFileDelete(file:S3File) {
-    if(window.confirm(`Are you sure you want to delete: ${file.name}`)) {
+  function handleFileDelete(file: S3File) {
+    if (window.confirm(`Are you sure you want to delete: ${file.name}`)) {
       deleteFile(file.key)
-      setFiles(e=>e.filter(s=>s.key !== file.key))
+      setFiles(e => e.filter(s => s.key !== file.key))
     }
+  }
+
+  function handleFolderCreationDialog() {
+    setFolderCreationDialog(true)
+  }
+
+  function handleFolderCreation(filename: string) {
+    if (filename !== '' && !filename.includes('/')) {
+      setFiles(e => [...e, {
+        name: filename,
+        key: currDir + filename,
+        type: "folder",
+        size: NaN,
+        modified: "-"
+      }])
+    }
+    else {
+      if (filename == "") {
+        toast.error('Please enter a filename')
+      }
+      else {
+        toast.error('Please remove \'/\' from your file name.')
+      }
+    }
+    setFolderCreationDialog(false)
   }
 
   return (
@@ -113,7 +152,7 @@ export default function Home() {
             </Button>
           </DropdownMenuTrigger>
           <DropdownMenuContent>
-            <DropdownMenuItem>
+            <DropdownMenuItem onClick={() => { handleFolderCreationDialog() }}>
               Create Folder
             </DropdownMenuItem>
             <DropdownMenuItem onClick={() => { handleFileInputUi() }}>
@@ -176,7 +215,7 @@ export default function Home() {
                       </DropdownMenuTrigger>
                       <DropdownMenuContent>
                         <DropdownMenuItem onClick={() => { handleFileDownload(file) }}>Download</DropdownMenuItem>
-                        <DropdownMenuItem onClick={()=>{ handleFileDelete(file)}}>Delete</DropdownMenuItem>
+                        <DropdownMenuItem onClick={() => { handleFileDelete(file) }}>Delete</DropdownMenuItem>
                         {/* <DropdownMenuItem>Move</DropdownMenuItem> */}
                       </DropdownMenuContent>
                     </DropdownMenu>
@@ -188,6 +227,25 @@ export default function Home() {
         </TableBody>
       </Table>
       <input type="file" ref={fileInputRef} onChange={e => { handleFileUpload(e) }} style={{ display: "none" }} />
+      <Dialog onOpenChange={() => { setFolderCreationDialog(e => !e) }} open={folderCreationDialog}>
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle>Create New Folder</DialogTitle>
+            <DialogDescription>
+              Please name your folder.
+            </DialogDescription>
+          </DialogHeader>
+          <form onSubmit={(e: any) => {
+            e.preventDefault()
+            handleFolderCreation(e?.target[0]?.value)
+          }}>
+
+            <Input placeholder="Folder Name" />
+            <Button type="submit" className="w-full mt-2">Create</Button>
+          </form>
+        </DialogContent>
+      </Dialog>
+
     </div>
   )
 }
