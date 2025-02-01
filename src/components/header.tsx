@@ -28,7 +28,7 @@ export function Header() {
             type="search"
             placeholder="Search in Drive"
             className="w-full max-w-sm"
-            leftIcon={<SearchIcon className="h-4 w-4 text-muted-foreground" />}
+            // leftIcon={<SearchIcon className="h-4 w-4 text-muted-foreground" />}
           />
         </div>
         <div className="flex items-center gap-4">

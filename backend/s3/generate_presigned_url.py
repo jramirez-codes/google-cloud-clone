@@ -15,3 +15,15 @@ def generate_presigned_download_url(bucket_name, object_key, expiration=3600):
     except NoCredentialsError:
         print("Credentials not available.")
         return None
+
+def generate_presigned_upload_url(bucket_name, object_name, content_type, expiration=3600):
+    try:
+        response = s3_client.generate_presigned_url(
+            "put_object",
+            Params={"Bucket": bucket_name, "Key": object_name, "ContentType": content_type},
+            ExpiresIn=expiration,
+        )
+        return response
+    except Exception as e:
+        print(f"Error generating presigned URL: {e}")
+        return None

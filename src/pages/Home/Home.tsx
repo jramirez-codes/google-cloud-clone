@@ -15,6 +15,8 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu"
 import { downloadFile } from "./util/download-file"
+import { uploadFile } from "./util/upload-file"
+import { toast } from "sonner"
 
 // const breadcrumbItems = [
 //   { label: "My Drive", href: "" },
@@ -38,6 +40,7 @@ export default function Home() {
     label: 'Home',
     href: ''
   }])
+  const fileInputRef = React.useRef<any>(null)
 
   React.useEffect(() => {
     const asyncFunc = async () => {
@@ -50,7 +53,7 @@ export default function Home() {
     asyncFunc()
   }, [currDir])
 
-  function handleFolerFileClick(file: S3File) {
+  function handleFolderClick(file: S3File) {
     if (file.type === 'folder') {
       const newDir = breadcrumbItems[breadcrumbItems.length - 1].href + file.name + '/'
       const newCrumb: S3Breadcrumbs = {
@@ -66,21 +69,38 @@ export default function Home() {
     downloadFile(file.key)
   }
 
+  async function handleFileUpload(event: any) {
+    setAreResultsLoading(_ => true)
+    if (await uploadFile(event.target.files[0], currDir + event.target.files[0].name)) {
+      toast.success(`Upload Success`, { description: `${event.target.files[0].name} as uploaded!` })
+    }
+    else {
+      toast.error(`Upload Failed`, { description: `${event.target.files[0].name} has failed to upload, please try again!` })
+    }
+    setAreResultsLoading(_ => false)
+  }
+
+  function handleFileInputUi() {
+    if (fileInputRef && fileInputRef.hasOwnProperty('current')) {
+      fileInputRef?.current?.click()
+    }
+  }
+
   return (
-    <div className="space-y-4 p-3">
+    <div className="space-y-4">
       <div className="flex items-center justify-between">
         <Breadcrumbs areResultsLoading={areResultsLoading} items={breadcrumbItems} setCurrDir={setCurrDir} setBreadcrumbs={setBreadcrumbs} />
         <DropdownMenu>
           <DropdownMenuTrigger>
-        <Button>
-          <PlusIcon className="h-4 w-4" />
-        </Button>
+            <Button>
+              <PlusIcon className="h-4 w-4" />
+            </Button>
           </DropdownMenuTrigger>
           <DropdownMenuContent>
             <DropdownMenuItem>
               Create Folder
             </DropdownMenuItem>
-            <DropdownMenuItem>
+            <DropdownMenuItem onClick={() => { handleFileInputUi() }}>
               Upload File
             </DropdownMenuItem>
           </DropdownMenuContent>
@@ -119,7 +139,7 @@ export default function Home() {
             <>
               {files.map((file) => (
                 <TableRow key={file.name}>
-                  <TableCell className="font-medium" onClick={() => { handleFolerFileClick(file) }}>
+                  <TableCell className="font-medium" onClick={() => { handleFolderClick(file) }}>
                     <div className="flex items-center gap-2">
                       {file.type === "folder" ? (
                         <FolderIcon className="h-4 w-4 text-blue-500" />
@@ -139,7 +159,7 @@ export default function Home() {
                         </Button>
                       </DropdownMenuTrigger>
                       <DropdownMenuContent>
-                        <DropdownMenuItem onClick={()=>{handleFileDownload(file)}}>Download</DropdownMenuItem>
+                        <DropdownMenuItem onClick={() => { handleFileDownload(file) }}>Download</DropdownMenuItem>
                         <DropdownMenuItem>Delete</DropdownMenuItem>
                         <DropdownMenuItem>Move</DropdownMenuItem>
                       </DropdownMenuContent>
@@ -151,6 +171,7 @@ export default function Home() {
           )}
         </TableBody>
       </Table>
+      <input type="file" ref={fileInputRef} onChange={e => { handleFileUpload(e) }} style={{ display: "none" }} />
     </div>
   )
 }
