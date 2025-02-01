@@ -3,7 +3,7 @@ export interface S3File {
   key: string
   type: string,
   modified: string,
-  size: string
+  size: number
 }
 
 export interface S3Breadcrumbs {

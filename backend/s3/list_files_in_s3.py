@@ -34,7 +34,7 @@ def list_files_in_s3(bucket_name, prefix=''):
                 file_info = {
                     "name": content['Key'].split('/')[-1],
                     "key": content['Key'],
-                    "size": content['Size'],
+                    "size": int(content['Size']),
                     "modified": content['LastModified'].isoformat(),
                     "type": get_file_content_type(bucket_name, content['Key']),
                 }

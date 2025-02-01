@@ -150,7 +150,7 @@ export default function Home() {
                       {file.name}
                     </div>
                   </TableCell>
-                  <TableCell>{humanReadableSize(parseInt(file.size))}</TableCell>
+                  <TableCell>{humanReadableSize(file.size)}</TableCell>
                   <TableCell>{file.modified}</TableCell>
                   <TableCell>
                     <DropdownMenu>
