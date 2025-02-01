@@ -18,6 +18,7 @@ import { downloadFile } from "./util/download-file"
 import { uploadFile } from "./util/upload-file"
 import { toast } from "sonner"
 import { humanReadableSize } from "./util/human-readable-data-size"
+import { deleteFile } from "./util/delete-file"
 
 // const breadcrumbItems = [
 //   { label: "My Drive", href: "" },
@@ -72,8 +73,15 @@ export default function Home() {
 
   async function handleFileUpload(event: any) {
     setAreResultsLoading(_ => true)
-    if (await uploadFile(event.target.files[0], currDir + event.target.files[0].name)) {
+    if (await uploadFile(event.target.files[0], event.target.files[0].name)) {
       toast.success(`Upload Success`, { description: `${event.target.files[0].name} as uploaded!` })
+      setFiles(e=>[...e.filter(a=>a.key!== currDir + event.target.files[0].name),({ 
+        name: event.target.files[0].name, 
+        key: currDir + event.target.files[0].name,
+        type: "file", 
+        size: NaN, 
+        modified: "2023-06-01" 
+      } as S3File)])
     }
     else {
       toast.error(`Upload Failed`, { description: `${event.target.files[0].name} has failed to upload, please try again!` })
@@ -84,6 +92,13 @@ export default function Home() {
   function handleFileInputUi() {
     if (fileInputRef && fileInputRef.hasOwnProperty('current')) {
       fileInputRef?.current?.click()
+    }
+  }
+
+  function handleFileDelete(file:S3File) {
+    if(window.confirm(`Are you sure you want to delete: ${file.name}`)) {
+      deleteFile(file.key)
+      setFiles(e=>e.filter(s=>s.key !== file.key))
     }
   }
 
@@ -161,8 +176,8 @@ export default function Home() {
                       </DropdownMenuTrigger>
                       <DropdownMenuContent>
                         <DropdownMenuItem onClick={() => { handleFileDownload(file) }}>Download</DropdownMenuItem>
-                        <DropdownMenuItem>Delete</DropdownMenuItem>
-                        <DropdownMenuItem>Move</DropdownMenuItem>
+                        <DropdownMenuItem onClick={()=>{ handleFileDelete(file)}}>Delete</DropdownMenuItem>
+                        {/* <DropdownMenuItem>Move</DropdownMenuItem> */}
                       </DropdownMenuContent>
                     </DropdownMenu>
                   </TableCell>
