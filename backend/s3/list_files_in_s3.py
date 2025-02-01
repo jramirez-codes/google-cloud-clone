@@ -4,20 +4,6 @@ import time
 # Set up AWS S3 client using boto3
 s3_client = boto3.client('s3')
 
-def human_readable_size(bytes: int) -> str:
-    if bytes < 0:
-        raise ValueError("Bytes value cannot be negative")
-
-    units = ["B", "KB", "MB", "GB", "TB", "PB", "EB", "ZB", "YB"]
-    size = float(bytes)
-    unit_index = 0
-
-    while size >= 1024 and unit_index < len(units) - 1:
-        size /= 1024
-        unit_index += 1
-
-    return f"{size:.2f} {units[unit_index]}"
-
 def get_file_content_type(bucket_name, key):
   sleep_time = 1
   while True:
@@ -48,7 +34,7 @@ def list_files_in_s3(bucket_name, prefix=''):
                 file_info = {
                     "name": content['Key'].split('/')[-1],
                     "key": content['Key'],
-                    "size": human_readable_size(int(content['Size'])),
+                    "size": content['Size'],
                     "modified": content['LastModified'].isoformat(),
                     "type": get_file_content_type(bucket_name, content['Key']),
                 }

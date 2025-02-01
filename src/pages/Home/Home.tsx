@@ -17,6 +17,7 @@ import {
 import { downloadFile } from "./util/download-file"
 import { uploadFile } from "./util/upload-file"
 import { toast } from "sonner"
+import { humanReadableSize } from "./util/human-readable-data-size"
 
 // const breadcrumbItems = [
 //   { label: "My Drive", href: "" },
@@ -149,7 +150,7 @@ export default function Home() {
                       {file.name}
                     </div>
                   </TableCell>
-                  <TableCell>{file.size}</TableCell>
+                  <TableCell>{humanReadableSize(parseInt(file.size))}</TableCell>
                   <TableCell>{file.modified}</TableCell>
                   <TableCell>
                     <DropdownMenu>
