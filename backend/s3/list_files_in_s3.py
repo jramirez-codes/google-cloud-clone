@@ -24,6 +24,7 @@ def list_files_in_s3(bucket_name, prefix=''):
         if 'CommonPrefixes' in response:
             files += [{
                 "name": prefix['Prefix'][:-1].split('/')[-1],
+                "key": prefix['Prefix'],
                 "size": "-",
                 "modified": "-",
                 "type": "folder",
@@ -32,6 +33,7 @@ def list_files_in_s3(bucket_name, prefix=''):
             for content in response['Contents']:
                 file_info = {
                     "name": content['Key'].split('/')[-1],
+                    "key": content['Key'],
                     "size": content['Size'],
                     "modified": content['LastModified'].isoformat(),
                     "type": get_file_content_type(bucket_name, content['Key']),

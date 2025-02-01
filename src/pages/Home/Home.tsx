@@ -6,6 +6,16 @@ import { S3File, S3Breadcrumbs } from "./types/s3File"
 import React from "react"
 import { fetchListOfFiles } from "./util/fetch-list-of-files"
 import { Skeleton } from "@/components/ui/skeleton"
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  // DropdownMenuLabel,
+  // DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu"
+import { downloadFile } from "./util/download-file"
+
 // const breadcrumbItems = [
 //   { label: "My Drive", href: "" },
 //   { label: "Dev Folder", href: "dev_folder/" },
@@ -50,6 +60,10 @@ export default function Home() {
       setBreadcrumbs(e => [...e, newCrumb])
       setCurrDir(newDir)
     }
+  }
+
+  function handleFileDownload(file: S3File) {
+    downloadFile(file.key)
   }
 
   return (
@@ -107,9 +121,18 @@ export default function Home() {
                   <TableCell>{file.size}</TableCell>
                   <TableCell>{file.modified}</TableCell>
                   <TableCell>
-                    <Button variant="ghost" size="sm" className="h-8 w-8 p-0">
-                      <MoreHorizontalIcon className="h-4 w-4" />
-                    </Button>
+                    <DropdownMenu>
+                      <DropdownMenuTrigger>
+                        <Button variant="ghost" size="sm" className="h-8 w-8 p-0">
+                          <MoreHorizontalIcon className="h-4 w-4" />
+                        </Button>
+                      </DropdownMenuTrigger>
+                      <DropdownMenuContent>
+                        <DropdownMenuItem onClick={()=>{handleFileDownload(file)}}>Download</DropdownMenuItem>
+                        <DropdownMenuItem>Delete</DropdownMenuItem>
+                        <DropdownMenuItem>Move</DropdownMenuItem>
+                      </DropdownMenuContent>
+                    </DropdownMenu>
                   </TableCell>
                 </TableRow>
               ))}
