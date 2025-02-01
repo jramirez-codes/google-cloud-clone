@@ -70,10 +70,21 @@ export default function Home() {
     <div className="space-y-4 p-3">
       <div className="flex items-center justify-between">
         <Breadcrumbs areResultsLoading={areResultsLoading} items={breadcrumbItems} setCurrDir={setCurrDir} setBreadcrumbs={setBreadcrumbs} />
+        <DropdownMenu>
+          <DropdownMenuTrigger>
         <Button>
-          <PlusIcon className="h-4 w-4 mr-2" />
-          New Folder
+          <PlusIcon className="h-4 w-4" />
         </Button>
+          </DropdownMenuTrigger>
+          <DropdownMenuContent>
+            <DropdownMenuItem>
+              Create Folder
+            </DropdownMenuItem>
+            <DropdownMenuItem>
+              Upload File
+            </DropdownMenuItem>
+          </DropdownMenuContent>
+        </DropdownMenu>
       </div>
       {/* <h1 className="text-2xl font-bold">Web Development</h1> */}
       <Table>
