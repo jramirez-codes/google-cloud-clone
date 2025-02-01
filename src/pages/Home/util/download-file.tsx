@@ -22,6 +22,9 @@ async function createDownloadLink(prefix:string) {
 }
 
 export async function downloadFile(prefix:string) {
-  const url = (await createDownloadLink(prefix)).download_url
-  window.open(url, "_blank")
+  // Create URL
+  const s3Url = (await createDownloadLink(prefix)).download_url
+
+  // Download File
+  window.open(s3Url, "_blank")
 }

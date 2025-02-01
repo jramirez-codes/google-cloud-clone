@@ -63,7 +63,7 @@ export default function Home() {
   }
 
   function handleFileDownload(file: S3File) {
-    downloadFile(file.key)
+    downloadFile(file.name, file.key)
   }
 
   return (
