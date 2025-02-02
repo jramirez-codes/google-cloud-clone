@@ -83,7 +83,7 @@ export default function Home() {
   async function handleFileUpload(event: any) {
     setAreResultsLoading(_ => true)
     if (await uploadFile(event.target.files[0], currDir + event.target.files[0].name)) {
-      toast.success(`Upload Success`, { description: `${event.target.files[0].name} as uploaded!` })
+      toast.success(`Upload Success`, { description: `${event.target.files[0].name} has uploaded!` })
       const dateString = (new Date).toLocaleDateString('en-GB', {
         year: 'numeric',
         month: '2-digit',
