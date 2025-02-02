@@ -93,7 +93,7 @@ export default function Home() {
         name: event.target.files[0].name,
         key: currDir + event.target.files[0].name,
         type: "file",
-        size: NaN,
+        size: event.target.files[0].size,
         modified: dateString
       } as S3File)])
     }
