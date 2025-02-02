@@ -1,4 +1,4 @@
-import { Breadcrumbs } from "../../components/breadcrumbs"
+import { Breadcrumbs } from "./ui-blocks/breadcrumbs"
 import { Button } from "../../components/ui/button"
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "../../components/ui/table"
 import { FileIcon, FolderIcon, MoreHorizontalIcon, PlusIcon } from "lucide-react"
