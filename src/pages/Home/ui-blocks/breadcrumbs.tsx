@@ -1,20 +1,16 @@
 import { ChevronRight } from "lucide-react"
-
-interface BreadcrumbItem {
-  label: string
-  href: string
-}
+import { S3Breadcrumbs } from "../types/s3File"
 
 interface BreadcrumbsProps {
-  items: BreadcrumbItem[],
+  items: S3Breadcrumbs[],
   areResultsLoading: boolean,
   setCurrDir: React.Dispatch<React.SetStateAction<string>>,
-  setBreadcrumbs: React.Dispatch<React.SetStateAction<BreadcrumbItem[]>>
+  setBreadcrumbs: React.Dispatch<React.SetStateAction<S3Breadcrumbs[]>>
 }
 
 export function Breadcrumbs({ items, setCurrDir, setBreadcrumbs, areResultsLoading }: BreadcrumbsProps) {
 
-  function handleBreadcrumbRouting(item: BreadcrumbItem, index: number) {
+  function handleBreadcrumbRouting(item: S3Breadcrumbs, index: number) {
     if (!areResultsLoading) {
       setBreadcrumbs(e=>e.slice(0, index+1))
       setCurrDir(item.href)
