@@ -27,6 +27,7 @@ import {
   DialogTitle,
 } from "@/components/ui/dialog"
 import { Input } from "@/components/ui/input"
+import { CenteredProgressBar } from "./ui-blocks/centered-progress-bar"
 
 // const breadcrumbItems = [
 //   { label: "My Drive", href: "" },
@@ -52,6 +53,7 @@ export default function Home() {
   }])
   const fileInputRef = React.useRef<any>(null)
   const [folderCreationDialog, setFolderCreationDialog] = React.useState(false)
+  const [uploadedFilename, setUploadedFilename] = React.useState<string|null>(null)
 
   React.useEffect(() => {
     const asyncFunc = async () => {
@@ -82,6 +84,7 @@ export default function Home() {
 
   async function handleFileUpload(event: any) {
     setAreResultsLoading(_ => true)
+    setUploadedFilename(_=>event.target.files[0].name)
     if (await uploadFile(event.target.files[0], currDir + event.target.files[0].name)) {
       toast.success(`Upload Success`, { description: `${event.target.files[0].name} has uploaded!` })
       const dateString = (new Date).toLocaleDateString('en-GB', {
@@ -101,6 +104,7 @@ export default function Home() {
       toast.error(`Upload Failed`, { description: `${event.target.files[0].name} has failed to upload, please try again!` })
     }
     setAreResultsLoading(_ => false)
+    setUploadedFilename(_=>null)
   }
 
   function handleFileInputUi() {
@@ -245,7 +249,7 @@ export default function Home() {
           </form>
         </DialogContent>
       </Dialog>
-
+      <CenteredProgressBar isVisible={uploadedFilename !== null} filename={uploadedFilename}/>
     </div>
   )
 }
